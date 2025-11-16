@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sinh Nhật Của Bạn 🎂</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+    <!-- 3D Rotating Background -->
+    <div class="bg-3d" id="bg3d"></div>
+    
+    <!-- Particles Background -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- Confetti Container -->
+    <canvas id="confetti"></canvas>
+    
+    <!-- Floating Emojis -->
+    <div class="floating-emojis" id="floatingEmojis"></div>
+    
+    <!-- Fireworks Canvas -->
+    <canvas id="fireworks"></canvas>
+    
+    <!-- Music Control -->
+    <div class="music-control" id="musicControl">
+        <button class="music-btn" id="musicBtn">🎵</button>
+        <span class="music-label">Nhạc sinh nhật</span>
+    </div>
+    
+    <!-- Theme Switcher -->
+    <div class="theme-switcher">
+        <button class="theme-btn" data-theme="pink">🌸</button>
+        <button class="theme-btn" data-theme="blue">💙</button>
+        <button class="theme-btn" data-theme="purple">💜</button>
+        <button class="theme-btn" data-theme="rainbow">🌈</button>
+    </div>
+    
+    <div class="container">
+        <div class="birthday-card" id="birthdayCard">
+            <div class="countdown-section" id="countdownSection">
+                <h1 class="title">🎉 Đếm Ngược Đến Sinh Nhật 🎉</h1>
+                
+
+                <div class="countdown" id="countdown">
+                    <div class="time-box">
+                        <span class="time" id="days">00</span>
+                        <span class="label">Ngày</span>
+                    </div>
+                    <div class="time-box">
+                        <span class="time" id="hours">00</span>
+                        <span class="label">Giờ</span>
+                    </div>
+                    <div class="time-box">
+                        <span class="time" id="minutes">00</span>
+                        <span class="label">Phút</span>
+                    </div>
+                    <div class="time-box">
+                        <span class="time" id="seconds">00</span>
+                        <span class="label">Giây</span>
+                    </div>
+                </div>
+                <p class="date-info" id="dateInfo"></p>
+            </div>
+
+            <div class="birthday-message" id="birthdayMessage">
+                <!-- Password Lock -->
+                <div class="password-lock" id="passwordLock">
+                    <div class="lock-icon">🔒</div>
+                    <h2>Nhập mật khẩu để mở quà!</h2>
+                    <input type="text" id="passwordCheck" placeholder="Nhập mật khẩu...">
+                    <button class="unlock-btn" id="unlockBtn">🔓 Mở Khóa</button>
+                    <p class="hint-text">Gợi ý: Năm sinh của bạn 😉</p>
+                </div>
+                
+                <!-- Gift Box Animation -->
+                <div class="gift-container" id="giftContainer">
+                    <div class="gift-box" id="giftBox">
+                        <div class="gift-lid"></div>
+                        <div class="gift-body"></div>
+                        <div class="gift-ribbon-v"></div>
+                        <div class="gift-ribbon-h"></div>
+                    </div>
+                    <p class="gift-hint">🎁 Nhấn vào hộp quà!</p>
+                </div>
+
+                <div class="celebration-content" id="celebrationContent">
+                    <h1 class="celebration-title sparkle typing-effect" id="typingTitle"></h1>
+                    
+                    <!-- Photo Display -->
+                    <div class="birthday-photo" id="birthdayPhoto"></div>
+                    
+                    <div class="balloons">
+                        <span class="balloon">🎈</span>
+                        <span class="balloon">🎈</span>
+                        <span class="balloon">🎈</span>
+                    </div>
+                    
+                    <!-- Memory Timeline -->
+                    <div class="memory-timeline" id="memoryTimeline">
+                        <div class="timeline-item">
+                            <div class="timeline-icon">🎂</div>
+                            <div class="timeline-content">
+                                <h4>Hôm nay</h4>
+                                <p>Một năm trưởng thành hơn!</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="personal-message" id="personalMessage">
+                        <p class="message"></p>
+                    </div>
+                    
+                    <!-- 3D Interactive Cake -->
+                    <div class="interactive-cake" id="interactiveCake">
+                        <div class="cake-3d" id="cake3d">
+                            <div class="cake-3d-container">
+                                <div class="cake-side front"></div>
+                                <div class="cake-side back"></div>
+                                <div class="cake-side left"></div>
+                                <div class="cake-side right"></div>
+                                <div class="cake-side top"></div>
+                                <div class="cake-side bottom"></div>
+                            </div>
+                        </div>
+                        <div class="candles" id="candles"></div>
+                        <p class="cake-hint">🕯️ Nhấn vào nến để thổi! | 🖱️ Kéo để xoay bánh</p>
+                    </div>
+                    
+                    <!-- Drawing Canvas -->
+                    <div class="drawing-section">
+                        <h3>🎨 Vẽ tranh tặng Châu!</h3>
+                        <canvas id="drawingCanvas" width="600" height="400"></canvas>
+                        <div class="drawing-controls">
+                            <input type="color" id="colorPicker" value="#ff69b4">
+                            <input type="range" id="brushSize" min="1" max="20" value="5">
+                            <button class="draw-btn" id="clearCanvas">🗑️ Xóa</button>
+                            <button class="draw-btn" id="saveDrawing">💾 Lưu</button>
+                        </div>
+                    </div>
+                    
+                    <!-- QR Code Section -->
+                    <div class="qr-section">
+                        <h3>📱 Chia sẻ bằng QR Code</h3>
+                        <div id="qrcode"></div>
+                        <p>Quét mã để xem trang sinh nhật!</p>
+                    </div>
+                    
+                    <!-- Share Buttons -->
+                    <div class="share-section">
+                        <h3>Chia sẻ niềm vui! 🎉</h3>
+                        <div class="share-buttons">
+                            <button class="share-btn facebook" onclick="shareToFacebook()">
+                                📘 Facebook
+                            </button>
+                            <button class="share-btn twitter" onclick="shareToTwitter()">
+                                🐦 Twitter
+                            </button>
+                            <button class="share-btn copy" onclick="copyLink()">
+                                🔗 Copy Link
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hidden Settings (for advanced users - press Ctrl+Shift+S to open) -->
+        <div class="settings" style="display: none;">
+            <button class="settings-btn" id="settingsBtn">⚙️ Cài Đặt</button>
+            <div class="settings-panel" id="settingsPanel">
+                <h3>Tùy Chỉnh Sinh Nhật</h3>
+                <div class="setting-group">
+                    <label>Ngày sinh nhật:</label>
+                    <input type="date" id="birthdayInput">
+                </div>
+                <div class="setting-group">
+                    <label>Tên người sinh nhật:</label>
+                    <input type="text" id="nameInput" placeholder="Nhập tên...">
+                </div>
+                <div class="setting-group">
+                    <label>Lời nhắn cá nhân:</label>
+                    <textarea id="messageInput" placeholder="Viết lời chúc của bạn..." rows="4"></textarea>
+                </div>
+                <div class="setting-group">
+                    <label>Upload ảnh sinh nhật:</label>
+                    <input type="file" id="photoInput" accept="image/*">
+                    <div class="photo-preview" id="photoPreview"></div>
+                </div>
+                <div class="setting-group">
+                    <label>Tạo mật khẩu (để mở quà):</label>
+                    <input type="text" id="passwordInput" placeholder="VD: 2006 (năm sinh)">
+                </div>
+                <button class="save-btn" id="saveBtn">💾 Lưu Tất Cả</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
