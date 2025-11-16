@@ -1,0 +1,1148 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #000;
+    color: #0f0;
+    overflow: hidden;
+    transition: all 0.5s ease;
+}
+
+body.theme-neon {
+    background: linear-gradient(45deg, #1a0033, #330066);
+}
+
+body.theme-galaxy {
+    background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+}
+
+body.theme-cyberpunk {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2e 50%, #0a0a0a 100%);
+}
+
+.container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+}
+
+#matrixCanvas, #fireworksCanvas, #confettiCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#matrixCanvas {
+    z-index: 1;
+}
+
+#fireworksCanvas {
+    z-index: 2;
+    pointer-events: none;
+}
+
+#confettiCanvas {
+    z-index: 3;
+    pointer-events: none;
+}
+
+/* Theme Selector */
+.theme-selector {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+}
+
+.theme-btn {
+    padding: 10px 15px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #0f0;
+    border: 2px solid #0f0;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: all 0.3s;
+    backdrop-filter: blur(10px);
+}
+
+.theme-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 255, 0, 0.3);
+}
+
+.theme-btn.active {
+    background: #0f0;
+    color: #000;
+    font-weight: bold;
+}
+
+/* Controls */
+.controls {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.95);
+    border-radius: 15px;
+    border: 2px solid #0f0;
+    max-width: 400px;
+    z-index: 10;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 10px 40px rgba(0, 255, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.controls.collapsed .controls-body {
+    display: none;
+}
+
+.controls-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid rgba(0, 255, 0, 0.3);
+}
+
+.controls-header h1 {
+    font-size: 1.2em;
+    color: #0f0;
+    margin: 0;
+}
+
+.toggle-btn {
+    background: none;
+    border: none;
+    color: #0f0;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.controls.collapsed .toggle-btn {
+    transform: rotate(-90deg);
+}
+
+.controls-body {
+    padding: 20px;
+}
+
+.version-selector {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.version-btn {
+    flex: 1;
+    padding: 8px;
+    background: #001a00;
+    color: #0f0;
+    border: 1px solid #0f0;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.8em;
+    transition: all 0.3s;
+}
+
+.version-btn:hover {
+    background: #003300;
+}
+
+.version-btn.active {
+    background: #0f0;
+    color: #000;
+    font-weight: bold;
+}
+
+.input-group {
+    margin-bottom: 12px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 0.9em;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 8px;
+    background: #001a00;
+    border: 1px solid #0f0;
+    border-radius: 5px;
+    color: #0f0;
+    font-family: 'Courier New', monospace;
+}
+
+.start-btn, .share-btn, .qr-btn {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    background: #0f0;
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+    transition: all 0.3s;
+}
+
+.start-btn:hover, .share-btn:hover, .qr-btn:hover {
+    background: #0c0;
+    transform: scale(1.05);
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.modal-content {
+    background-color: #001a00;
+    margin: 10% auto;
+    padding: 30px;
+    border: 2px solid #0f0;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.close {
+    color: #0f0;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: #0c0;
+}
+
+#qrcode {
+    margin: 20px auto;
+    display: inline-block;
+}
+
+.share-link {
+    word-break: break-all;
+    background: #000;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 15px;
+    font-size: 0.8em;
+}
+
+@media (max-width: 768px) {
+    .controls {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+        padding: 15px;
+    }
+    
+    .version-btn {
+        font-size: 0.7em;
+        padding: 6px;
+    }
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 15px;
+    border-bottom: 2px solid rgba(0, 255, 0, 0.2);
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 10px;
+    background: transparent;
+    color: #0f0;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    font-size: 0.85em;
+    transition: all 0.3s;
+}
+
+.tab-btn:hover {
+    background: rgba(0, 255, 0, 0.1);
+}
+
+.tab-btn.active {
+    border-bottom-color: #0f0;
+    font-weight: bold;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.action-buttons button {
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.9em;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.start-btn {
+    background: linear-gradient(135deg, #00ff00, #00cc00);
+    color: #000;
+    grid-column: 1 / -1;
+}
+
+.record-btn {
+    background: linear-gradient(135deg, #ff0080, #ff0040);
+    color: #fff;
+    grid-column: 1 / -1;
+}
+
+.share-btn {
+    background: linear-gradient(135deg, #0080ff, #0040ff);
+    color: #fff;
+}
+
+.qr-btn {
+    background: linear-gradient(135deg, #8000ff, #4000ff);
+    color: #fff;
+}
+
+.download-btn {
+    background: linear-gradient(135deg, #ff8000, #ff4000);
+    color: #fff;
+    grid-column: 1 / -1;
+}
+
+.action-buttons button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 255, 0, 0.3);
+}
+
+/* Voice Button */
+.voice-btn {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #ff00ff, #8000ff);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.voice-btn:hover {
+    transform: scale(1.05);
+}
+
+.voice-btn.recording {
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+#voiceStatus {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.85em;
+    color: #0f0;
+}
+
+/* Photo Gallery */
+.photo-gallery {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.photo-gallery.hidden {
+    display: none;
+}
+
+.gallery-images {
+    max-width: 80%;
+    max-height: 80%;
+}
+
+.gallery-images img {
+    max-width: 100%;
+    max-height: 80vh;
+    object-fit: contain;
+}
+
+.gallery-close, .gallery-prev, .gallery-next {
+    position: absolute;
+    background: rgba(0, 255, 0, 0.2);
+    border: 2px solid #0f0;
+    color: #0f0;
+    padding: 15px 20px;
+    cursor: pointer;
+    font-size: 1.5em;
+    border-radius: 50%;
+    transition: all 0.3s;
+}
+
+.gallery-close {
+    top: 20px;
+    right: 20px;
+}
+
+.gallery-prev {
+    left: 20px;
+}
+
+.gallery-next {
+    right: 20px;
+}
+
+.gallery-close:hover, .gallery-prev:hover, .gallery-next:hover {
+    background: #0f0;
+    color: #000;
+}
+
+/* Recording Indicator */
+.recording-indicator {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 0, 0, 0.9);
+    color: #fff;
+    padding: 20px 40px;
+    border-radius: 50px;
+    font-size: 1.2em;
+    font-weight: bold;
+    z-index: 100;
+    animation: pulse 1s infinite;
+}
+
+.recording-indicator.hidden {
+    display: none;
+}
+
+/* Music Player */
+.music-player {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    border: 2px solid #0f0;
+    border-radius: 50px;
+    padding: 15px 30px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    z-index: 10;
+}
+
+.music-player.hidden {
+    display: none;
+}
+
+.music-player button {
+    background: none;
+    border: none;
+    color: #0f0;
+    font-size: 1.5em;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.music-player button:hover {
+    color: #0c0;
+    transform: scale(1.2);
+}
+
+.music-info {
+    color: #0f0;
+    font-weight: bold;
+}
+
+/* Countdown Display */
+.countdown-display {
+    text-align: center;
+    padding: 20px;
+    background: rgba(0, 255, 0, 0.1);
+    border-radius: 10px;
+    margin-top: 15px;
+}
+
+.countdown-display .time-unit {
+    display: inline-block;
+    margin: 0 10px;
+}
+
+.countdown-display .number {
+    font-size: 2em;
+    font-weight: bold;
+    color: #0f0;
+    display: block;
+}
+
+.countdown-display .label {
+    font-size: 0.8em;
+    color: #0c0;
+}
+
+/* Copy Button */
+.copy-btn {
+    width: 100%;
+    padding: 12px;
+    margin-top: 15px;
+    background: #0f0;
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.copy-btn:hover {
+    background: #0c0;
+    transform: scale(1.05);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .theme-selector {
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+    
+    .theme-btn {
+        padding: 8px 12px;
+        font-size: 0.8em;
+    }
+    
+    .controls {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+    
+    .version-btn {
+        font-size: 0.7em;
+        padding: 8px;
+    }
+    
+    .tab-btn {
+        font-size: 0.75em;
+        padding: 8px;
+    }
+}
+
+
+/* Big Countdown Display */
+.big-countdown {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 4;
+    background: rgba(0, 0, 0, 0.85);
+    padding: 40px 60px;
+    border-radius: 20px;
+    border: 3px solid #0f0;
+    box-shadow: 0 0 50px rgba(0, 255, 0, 0.5), inset 0 0 30px rgba(0, 255, 0, 0.1);
+    backdrop-filter: blur(10px);
+    animation: glow 2s ease-in-out infinite;
+}
+
+@keyframes glow {
+    0%, 100% {
+        box-shadow: 0 0 30px rgba(0, 255, 0, 0.5), inset 0 0 20px rgba(0, 255, 0, 0.1);
+    }
+    50% {
+        box-shadow: 0 0 60px rgba(0, 255, 0, 0.8), inset 0 0 40px rgba(0, 255, 0, 0.2);
+    }
+}
+
+.countdown-title {
+    font-size: 2.5em;
+    color: #0f0;
+    margin-bottom: 30px;
+    text-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+    animation: pulse-text 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-text {
+    0%, 100% {
+        text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+    }
+    50% {
+        text-shadow: 0 0 30px rgba(0, 255, 0, 1);
+    }
+}
+
+.countdown-timer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.time-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(0, 255, 0, 0.1);
+    padding: 20px 25px;
+    border-radius: 15px;
+    border: 2px solid #0f0;
+    min-width: 120px;
+    transition: all 0.3s;
+}
+
+.time-box:hover {
+    background: rgba(0, 255, 0, 0.2);
+    transform: scale(1.05);
+}
+
+.time-value {
+    font-size: 4em;
+    font-weight: bold;
+    color: #0f0;
+    text-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+    font-family: 'Courier New', monospace;
+    line-height: 1;
+}
+
+.time-label {
+    font-size: 1.2em;
+    color: #0c0;
+    margin-top: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.time-separator {
+    font-size: 4em;
+    color: #0f0;
+    font-weight: bold;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 49% {
+        opacity: 1;
+    }
+    50%, 100% {
+        opacity: 0.3;
+    }
+}
+
+.countdown-date {
+    font-size: 1.5em;
+    color: #0f0;
+    margin-top: 20px;
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+}
+
+.big-countdown.hidden {
+    display: none;
+}
+
+.big-countdown.birthday-reached {
+    animation: celebrate 1s ease-in-out infinite;
+}
+
+@keyframes celebrate {
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.05);
+    }
+}
+
+/* Theme variations for countdown */
+body.theme-neon .big-countdown {
+    border-color: #ff00ff;
+    box-shadow: 0 0 50px rgba(255, 0, 255, 0.5), inset 0 0 30px rgba(255, 0, 255, 0.1);
+}
+
+body.theme-neon .countdown-title,
+body.theme-neon .time-value,
+body.theme-neon .time-separator,
+body.theme-neon .countdown-date {
+    color: #ff00ff;
+    text-shadow: 0 0 20px rgba(255, 0, 255, 0.8);
+}
+
+body.theme-neon .time-box {
+    border-color: #ff00ff;
+    background: rgba(255, 0, 255, 0.1);
+}
+
+body.theme-galaxy .big-countdown {
+    border-color: #00ffff;
+    box-shadow: 0 0 50px rgba(0, 255, 255, 0.5), inset 0 0 30px rgba(0, 255, 255, 0.1);
+}
+
+body.theme-galaxy .countdown-title,
+body.theme-galaxy .time-value,
+body.theme-galaxy .time-separator,
+body.theme-galaxy .countdown-date {
+    color: #00ffff;
+    text-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+}
+
+body.theme-galaxy .time-box {
+    border-color: #00ffff;
+    background: rgba(0, 255, 255, 0.1);
+}
+
+body.theme-cyberpunk .big-countdown {
+    border-color: #ff0080;
+    box-shadow: 0 0 50px rgba(255, 0, 128, 0.5), inset 0 0 30px rgba(255, 0, 128, 0.1);
+}
+
+body.theme-cyberpunk .countdown-title,
+body.theme-cyberpunk .time-value,
+body.theme-cyberpunk .time-separator,
+body.theme-cyberpunk .countdown-date {
+    color: #ff0080;
+    text-shadow: 0 0 20px rgba(255, 0, 128, 0.8);
+}
+
+body.theme-cyberpunk .time-box {
+    border-color: #ff0080;
+    background: rgba(255, 0, 128, 0.1);
+}
+
+/* Responsive for countdown */
+@media (max-width: 768px) {
+    .big-countdown {
+        padding: 20px 30px;
+        width: 90%;
+    }
+    
+    .countdown-title {
+        font-size: 1.5em;
+        margin-bottom: 20px;
+    }
+    
+    .countdown-timer {
+        gap: 8px;
+    }
+    
+    .time-box {
+        padding: 15px 10px;
+        min-width: 70px;
+    }
+    
+    .time-value {
+        font-size: 2.5em;
+    }
+    
+    .time-label {
+        font-size: 0.8em;
+        margin-top: 5px;
+    }
+    
+    .time-separator {
+        font-size: 2.5em;
+    }
+    
+    .countdown-date {
+        font-size: 1em;
+        margin-top: 15px;
+    }
+}
+
+
+/* Birthday Message (Locked) */
+.birthday-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.95);
+    padding: 50px;
+    border-radius: 20px;
+    border: 3px solid #0f0;
+    box-shadow: 0 0 60px rgba(0, 255, 0, 0.8);
+    z-index: 100;
+    max-width: 700px;
+    width: 90%;
+    animation: fadeIn 0.5s ease-in;
+}
+
+.birthday-message.hidden {
+    display: none;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+.message-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: 2px solid #0f0;
+    color: #0f0;
+    font-size: 1.5em;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.message-close:hover {
+    background: #0f0;
+    color: #000;
+    transform: rotate(90deg);
+}
+
+.message-title {
+    font-size: 2em;
+    color: #0f0;
+    text-align: center;
+    margin-bottom: 30px;
+    text-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+}
+
+.message-content {
+    color: #0f0;
+    font-size: 1.2em;
+    line-height: 2;
+    text-align: center;
+}
+
+.message-content p {
+    margin-bottom: 25px;
+    padding: 15px 20px;
+    background: rgba(0, 255, 0, 0.05);
+    border-radius: 15px;
+    border-left: 4px solid #0f0;
+    transition: all 0.3s;
+}
+
+.message-content p:hover {
+    background: rgba(0, 255, 0, 0.1);
+    transform: translateX(5px);
+    box-shadow: 0 5px 20px rgba(0, 255, 0, 0.3);
+}
+
+.message-intro {
+    font-size: 1.5em !important;
+    font-weight: bold;
+    color: #00ff00 !important;
+    text-shadow: 0 0 25px rgba(0, 255, 0, 1);
+    animation: pulse-text 2s ease-in-out infinite;
+}
+
+.message-main {
+    font-size: 1.15em !important;
+    color: #0f0 !important;
+}
+
+.message-wish {
+    font-size: 1.15em !important;
+    color: #00ff88 !important;
+}
+
+.message-encourage {
+    font-size: 1.15em !important;
+    color: #00ffaa !important;
+}
+
+.message-final {
+    font-size: 1.3em !important;
+    font-weight: bold;
+    color: #ffff00 !important;
+    text-shadow: 0 0 20px rgba(255, 255, 0, 0.8);
+}
+
+.message-from {
+    margin-top: 40px;
+    font-weight: bold;
+    font-size: 1.4em;
+    color: #ff0080;
+    text-shadow: 0 0 20px rgba(255, 0, 128, 1);
+    padding: 20px;
+    background: rgba(255, 0, 128, 0.1);
+    border-radius: 20px;
+    border: 2px solid #ff0080;
+}
+
+.countdown-message {
+    font-size: 1.3em;
+    color: #ff8000;
+    margin-top: 30px;
+    text-shadow: 0 0 15px rgba(255, 128, 0, 0.8);
+    animation: pulse-message 2s ease-in-out infinite;
+}
+
+@keyframes pulse-message {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+.unlock-btn {
+    margin-top: 30px;
+    padding: 20px 50px;
+    background: linear-gradient(135deg, #00ff00, #00cc00);
+    color: #000;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.5em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 5px 30px rgba(0, 255, 0, 0.5);
+    animation: glow-button 2s ease-in-out infinite;
+}
+
+@keyframes glow-button {
+    0%, 100% {
+        box-shadow: 0 5px 30px rgba(0, 255, 0, 0.5);
+    }
+    50% {
+        box-shadow: 0 5px 50px rgba(0, 255, 0, 1);
+    }
+}
+
+.unlock-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 10px 50px rgba(0, 255, 0, 1);
+}
+
+.unlock-btn.hidden {
+    display: none;
+}
+
+.countdown-subtitle {
+    font-size: 1.2em;
+    color: #0c0;
+    margin-bottom: 20px;
+}
+
+/* Responsive for message */
+@media (max-width: 768px) {
+    .birthday-message {
+        padding: 30px 20px;
+        width: 95%;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+    
+    .message-title {
+        font-size: 1.3em;
+        margin-bottom: 20px;
+    }
+    
+    .message-content {
+        font-size: 0.95em;
+        line-height: 1.8;
+    }
+    
+    .message-content p {
+        margin-bottom: 15px;
+        padding: 12px 15px;
+    }
+    
+    .message-intro {
+        font-size: 1.2em !important;
+    }
+    
+    .message-main,
+    .message-wish,
+    .message-encourage {
+        font-size: 0.95em !important;
+    }
+    
+    .message-final {
+        font-size: 1.1em !important;
+    }
+    
+    .message-from {
+        font-size: 1.1em;
+        margin-top: 25px;
+        padding: 15px;
+    }
+}
+
+
+/* Countdown Display Text */
+.countdown-display-text {
+    margin-bottom: 40px;
+    padding: 30px;
+    background: rgba(0, 255, 0, 0.08);
+    border-radius: 20px;
+    border: 3px solid rgba(0, 255, 0, 0.5);
+    box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
+}
+
+.time-remaining {
+    font-size: 2em;
+    color: #0f0;
+    margin-bottom: 25px;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    font-weight: bold;
+    text-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+    animation: pulse-text 1.5s ease-in-out infinite;
+}
+
+.countdown-text-large {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.time-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 20px 30px;
+    border-radius: 15px;
+    border: 2px solid #0f0;
+    min-width: 140px;
+    box-shadow: 0 5px 20px rgba(0, 255, 0, 0.3);
+    transition: all 0.3s;
+}
+
+.time-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 255, 0, 0.5);
+}
+
+.time-number {
+    font-size: 5em;
+    font-weight: bold;
+    color: #0f0;
+    text-shadow: 0 0 30px rgba(0, 255, 0, 1);
+    font-family: 'Courier New', monospace;
+    line-height: 1;
+    margin-bottom: 10px;
+}
+
+.time-unit {
+    font-size: 1.3em;
+    color: #0c0;
+    font-weight: bold;
+    letter-spacing: 3px;
+}
+
+@media (max-width: 768px) {
+    .countdown-display-text {
+        padding: 20px 15px;
+    }
+    
+    .time-remaining {
+        font-size: 1.2em;
+        letter-spacing: 2px;
+    }
+    
+    .countdown-text-large {
+        gap: 15px;
+    }
+    
+    .time-item {
+        padding: 15px 20px;
+        min-width: 100px;
+    }
+    
+    .time-number {
+        font-size: 3em;
+    }
+    
+    .time-unit {
+        font-size: 0.9em;
+        letter-spacing: 1px;
+    }
+}
+
+
+/* Time Remaining Text */
+.time-remaining-text {
+    font-size: 2em;
+    color: #0f0;
+    font-weight: bold;
+    margin: 25px 0 15px 0;
+    text-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+    background: rgba(0, 255, 0, 0.1);
+    padding: 15px 30px;
+    border-radius: 15px;
+    border: 2px solid rgba(0, 255, 0, 0.3);
+    animation: pulse-text 2s ease-in-out infinite;
+}
+
+@media (max-width: 768px) {
+    .time-remaining-text {
+        font-size: 1.2em;
+        padding: 10px 20px;
+    }
+}
